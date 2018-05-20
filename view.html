@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- jquery本体 -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <!-- /jquery本体 -->
+</head>
+
+<body>
+
+    <div id="now"></div>
+    <div id="now_start"></div>
+    <button id="start_button" disabled>start</button>
+    <button id="stop_button" disabled>stop</button>
+    <hr>
+    <ol id="list"></ol>
+
+
+
+
+
+    <script type="text/javascript">
+        // 存在チェック
+        if (String.prototype.format == undefined) {
+            /**
+             * フォーマット関数
+             */
+            String.prototype.format = function(arg) {
+                // 置換ファンク
+                var rep_fn = undefined;
+
+                // オブジェクトの場合
+                if (typeof arg == "object") {
+                    rep_fn = function(m, k) {
+                        return arg[k];
+                    }
+                }
+                // 複数引数だった場合
+                else {
+                    var args = arguments;
+                    rep_fn = function(m, k) {
+                        return args[parseInt(k)];
+                    }
+                }
+
+                return this.replace(/\{(\w+)\}/g, rep_fn);
+            }
+        }
+
+
+
+
+
+
+        /* Query取得 */
+        var val = getUrlVars();
+
+        if (val['id']) {
+            /* 一覧の取得 */
+            xmlHttp = new XMLHttpRequest();
+            //xmlHttp.open("GET", "test_php/test2.php", false);
+            xmlHttp.open("GET", "test_php/test3.php", false);
+            xmlHttp.send({
+                "id": val['id']
+            });
+            console.log(xmlHttp.responseText);
+            obj = JSON.parse(xmlHttp.responseText);
+            console.log(obj);
+
+            /* 動作しているか否か */
+            if (obj[0]['end'] == "") {
+                now_s = Date.parse(obj[0]['start']);
+                $('#now_start').html("start : " + obj[0]['start']);
+                PassageID = setInterval('updateTime()', 1000); // タイマーをセット(1000ms間隔)
+
+                obj.shift();
+
+                $('#stop_button').prop("disabled", false);
+            } else {
+                $('#start_button').prop("disabled", false);
+            }
+
+            /* 一覧表示 */
+            for (i in obj) {
+                s = Date.parse(obj[i]['start']);
+                e = Date.parse(obj[i]['end']);
+                console.log(s, e);
+
+                days = num2days(e - s);
+                day = days.d;
+                hour = days.h;
+                min = days.m;
+                sec = days.s;
+                console.log(day);
+                console.log(hour);
+                console.log(min);
+                console.log(sec);
+
+                li = document.createElement('li');
+                intv_ele = document.createElement('div');
+                intv_ele.class = "interval";
+                intv_ele.innerHTML = "{0} day, {1}:{2}:{3}".format(day, hour, min, sec);
+                s_ele = document.createElement('div');
+                s_ele.innerHTML = "start : " + obj[i]['start'];
+                e_ele = document.createElement('div');
+                e_ele.innerHTML = "end : " + obj[i]['end'];
+                li.appendChild(intv_ele);
+                li.appendChild(s_ele);
+                li.appendChild(e_ele);
+                $('#list').append(li);
+            }
+        }
+
+
+
+
+
+        // Ajax button click
+        $(function() {
+            $('#start_button').on('click', function() {
+                $.ajax({
+                        url: 'test_php/test3.php', // FIXME:
+                        type: 'POST',
+                        data: {
+                            'action': 'start'
+                        }
+                    })
+                    // Ajaxリクエストが成功した時発動
+                    .done((data) => {
+                        console.log("pushed start button");
+                        window.location.reload();
+                    })
+                    // Ajaxリクエストが失敗した時発動
+                    .fail((data) => {})
+                    // Ajaxリクエストが成功・失敗どちらでも発動
+                    .always((data) => {});
+            });
+        });
+
+
+
+        $(function() {
+            $('#stop_button').on('click', function() {
+                $.ajax({
+                        url: 'test_php/test2.php', // FIXME:
+                        type: 'POST',
+                        data: {
+                            'action': 'stop'
+                        }
+                    })
+                    // Ajaxリクエストが成功した時発動
+                    .done((data) => {
+                        console.log("pushed stop button");
+                        window.location.reload();
+                    })
+                    // Ajaxリクエストが失敗した時発動
+                    .fail((data) => {})
+                    // Ajaxリクエストが成功・失敗どちらでも発動
+                    .always((data) => {});
+            });
+        });
+
+
+
+
+
+        /**
+         * URL解析して、クエリ文字列を返す
+         * @returns {Array} クエリ文字列
+         */
+        function getUrlVars() {
+            var vars = [],
+                max = 0,
+                hash = "",
+                array = "";
+            var url = window.location.search;
+
+            //?を取り除くため、1から始める。複数のクエリ文字列に対応するため、&で区切る
+            hash = url.slice(1).split('&');
+            max = hash.length;
+            for (var i = 0; i < max; i++) {
+                array = hash[i].split('='); //keyと値に分割。
+                vars.push(array[0]); //末尾にクエリ文字列のkeyを挿入。
+                vars[array[0]] = array[1]; //先ほど確保したkeyに、値を代入。
+            }
+
+            return vars;
+        }
+
+
+        /**
+         * フォーマット関数
+         */
+        var $format = function(fmt, a) {
+            var rep_fn = undefined;
+
+            if (typeof a == "object") {
+                rep_fn = function(m, k) {
+                    return a[k];
+                }
+            } else {
+                var args = arguments;
+                rep_fn = function(m, k) {
+                    return args[parseInt(k) + 1];
+                }
+            }
+
+            return fmt.replace(/\{(\w+)\}/g, rep_fn);
+        }
+
+
+
+        /**
+         * day, hour, min, sec 取得
+         */
+        function num2days(num) {
+            day = Math.floor((e - s) / (1000 * 60 * 60 * 24));
+            hour = Math.floor((e - s) % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
+            min = Math.floor((e - s) % (1000 * 60 * 60) / (1000 * 60));
+            sec = Math.floor((e - s) % (1000 * 60) / 1000);
+            return {
+                d: day,
+                h: hour,
+                m: min,
+                s: sec
+            };
+        }
+
+
+
+
+        /**
+         * update time
+         */
+        function updateTime() {
+            e = new Date().getTime();
+            days = num2days(e - now_s);
+            day = days.d;
+            hour = days.h;
+            min = days.m;
+            sec = days.s;
+            $('#now').html("{0} day, {1}:{2}:{3}".format(day, hour, min, sec));
+        }
+    </script>
+
+</html>
