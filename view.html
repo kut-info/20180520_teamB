@@ -5,21 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>view</title>
 
     <!-- jquery本体 -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <!-- /jquery本体 -->
+
+    <style type="text/css">
+        div.interval {
+            font-size: x-large;
+            font-weight: bold;
+        }
+        
+        li {
+            padding: 10px;
+        }
+        
+        div.now_area {
+            padding: 10px;
+        }
+    </style>
+
+
 </head>
 
 <body>
-
-    <div id="now"></div>
-    <div id="now_start"></div>
+    <div class="now_area">
+        <div id="now" class="interval"></div>
+        <div id="now_start"></div>
+    </div>
     <button id="start_button" disabled>start</button>
     <button id="stop_button" disabled>stop</button>
     <hr>
-    <ol id="list"></ol>
+    <ol id="list" reversed></ol>
 
 
 
@@ -104,7 +122,7 @@
 
                 li = document.createElement('li');
                 intv_ele = document.createElement('div');
-                intv_ele.class = "interval";
+                intv_ele.className = "interval";
                 intv_ele.innerHTML = "{0} day, {1}:{2}:{3}".format(day, hour, min, sec);
                 s_ele = document.createElement('div');
                 s_ele.innerHTML = "start : " + obj[i]['start'];
