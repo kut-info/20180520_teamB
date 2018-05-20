@@ -92,7 +92,9 @@
             console.log(obj);
 
             /* 動作しているか否か */
-            if (obj[0]['end'] == "") {
+            first_s = Date.parse(obj[0]['start']);
+            first_e = Date.parse(obj[0]['end']);
+            if (first_s == first_e) {
                 now_s = Date.parse(obj[0]['start']);
                 $('#now_start').html("start : " + obj[0]['start']);
                 PassageID = setInterval('updateTime()', 1000); // タイマーをセット(1000ms間隔)
