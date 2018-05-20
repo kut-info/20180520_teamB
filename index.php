@@ -1,8 +1,3 @@
-<html>
-<head>
-	<meta charset="utf-8">
-</head>
-<body>
 <?php
 /*
 	$url = "test6.json";
@@ -26,5 +21,3 @@
 		$stmt = $pdo->query("update time set end=NOW() where id='$id' && start = end");
 	}
 ?>
-</body>
-</html>
