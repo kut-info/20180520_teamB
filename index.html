@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>generateQR</title>
+
+    <!-- jquery本体 -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <!-- /jquery本体 -->
+
+    <!-- jquery.qrcode.js -->
+    <script type="text/javascript" src="jquery.qrcode.min.js"></script>
+    <!-- /jquery.qrcode.js -->
+</head>
+
+<body>
+
+    <!-- PHP側でIDをQueryに付けてリダイレクトしてもらう -->
+    <!--<form action="test_php/test1.php">-->
+    <button type="submit" id="generate">QRコード生成</button>
+    <!--</form>-->
+
+    <div id="qrcode"></div>
+
+    <script type="text/javascript">
+        $('#generate').on('click', function() {
+            // Ajax通信を開始
+            $.ajax({
+                    url: 'test_php/test1.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    // フォーム要素の内容をハッシュ形式に変換
+                    data: $('form').serializeArray(),
+                    timeout: 5000,
+                })
+                .done(function(data) {
+                    // 通信成功時の処理を記述
+                    console.log(data);
+                    if (data['id']) {
+                        url = "http://localhost:8080/a.html?id=" + data["id"];
+                        $('#qrcode').html("");
+                        $('#qrcode').qrcode(url);
+                    }
+                })
+                .fail(function() {
+                    // 通信失敗時の処理を記述
+                    console.log("fail");
+                });
+        })
+    </script>
+
+
+</body>
+
+</html>
