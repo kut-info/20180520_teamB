@@ -59,7 +59,7 @@
 
 
         /* Query取得 */
-        var val = getUrlVars();
+        val = getUrlVars();
 
         if (val['id']) {
             /* 一覧の取得 */
@@ -128,7 +128,8 @@
                         url: 'test_php/test3.php', // FIXME:
                         type: 'POST',
                         data: {
-                            'action': 'start'
+                            'action': 'start',
+                            'id': val['id']
                         }
                     })
                     // Ajaxリクエストが成功した時発動
@@ -151,7 +152,8 @@
                         url: 'test_php/test2.php', // FIXME:
                         type: 'POST',
                         data: {
-                            'action': 'stop'
+                            'action': 'stop',
+                            'id': val['id']
                         }
                     })
                     // Ajaxリクエストが成功した時発動
