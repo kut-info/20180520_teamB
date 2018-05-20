@@ -1,4 +1,6 @@
 <?php
+	$user_name;
+	$passwd;
 /*
 	$url = "test6.json";
 	$json = file_get_contents($url);
@@ -8,7 +10,7 @@
 	$requset = json_decode(file_get_contents('php://input'), true);
 	try {
 		$dsn = "mysql:dbname=test;host=localhost;charset=utf8mb4";
-		$pdo = new PDO($dsn, "root", "tetsu537908");
+		$pdo = new PDO($dsn, $user_name, $passwd);
 	} catch (PDOException $e){
 		echo "error<br>";
 		exit;
