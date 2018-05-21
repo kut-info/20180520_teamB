@@ -82,12 +82,18 @@
         if (val['id']) {
             /* 一覧の取得 */
             xmlHttp = new XMLHttpRequest();
-            //xmlHttp.open("GET", "test_php/test2.php", false);
             xmlHttp.open("GET", "test_php/test3.php", false);
-            xmlHttp.send({
+            //xmlHttp.open("POST", "get.php", false);
+            xmlHttp.setRequestHeader('Content-Type', 'application/json');
+            a = xmlHttp.send({
                 "id": val['id']
             });
+            //a = xmlHttp.send('id=' + val['id']);
+            //a = xmlHttp.send('id=1');
+            console.log(a);
+            console.log(xmlHttp);
             console.log(xmlHttp.responseText);
+
             obj = JSON.parse(xmlHttp.responseText);
             console.log(obj);
 
@@ -145,7 +151,7 @@
         $(function() {
             $('#start_button').on('click', function() {
                 $.ajax({
-                        url: 'test_php/test3.php', // FIXME:
+                        url: 'timer.php',
                         type: 'POST',
                         data: {
                             'action': 'start',
@@ -169,7 +175,7 @@
         $(function() {
             $('#stop_button').on('click', function() {
                 $.ajax({
-                        url: 'test_php/test2.php', // FIXME:
+                        url: 'timer.php',
                         type: 'POST',
                         data: {
                             'action': 'stop',
